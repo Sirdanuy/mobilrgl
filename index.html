@@ -52,12 +52,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Webgl.loader.js";
+      var loaderUrl = buildUrl + "/none.loader.js";
       var config = {
         arguments: [],
-        dataUrl: "https://danny.b-cdn.net/Webgl.data.br",
-        frameworkUrl: buildUrl + "/Webgl.framework.js.br",
-        codeUrl: buildUrl + "/Webgl.wasm.br",
+        dataUrl: "https://danny.b-cdn.net/Build/none.data",
+        frameworkUrl: buildUrl + "/none.framework.js",
+        codeUrl: buildUrl + "/none.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Copeville Development Team",
         productName: "Copeville",
@@ -102,7 +102,7 @@
         canvas.style.height = "600px";
       }
 
-      canvas.style.background = "url('" + buildUrl + "/Webgl.jpg') center / cover";
+      canvas.style.background = "url('" + buildUrl + "/none.jpg') center / cover";
       document.querySelector("#unity-loading-bar").style.display = "block";
 
       var script = document.createElement("script");
