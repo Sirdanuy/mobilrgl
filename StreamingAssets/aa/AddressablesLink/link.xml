@@ -242,6 +242,25 @@
     <type fullname="MFPS.ULogin.bl_AccountDelectionWindow" preserve="all" />
     <type fullname="MFPS.ULogin.bl_RankingUIPro" preserve="all" />
     <type fullname="rotateWeaponIcon" preserve="all" />
+    <type fullname=".bl_Crosshair/WeaponCrosshair" preserve="nothing" serialized="true" />
+    <type fullname=".bl_Demolition/BombAssignMethod" preserve="nothing" serialized="true" />
+    <type fullname=".bl_Demolition/TerroristWinRequire" preserve="nothing" serialized="true" />
+    <type fullname=".bl_DropDispacher/DropInfo" preserve="nothing" serialized="true" />
+    <type fullname=".bl_EventHandler/UEvent" preserve="nothing" serialized="true" />
+    <type fullname=".bl_ExplosionDamage/ExplosionType" preserve="nothing" serialized="true" />
+    <type fullname=".bl_KillFeedBase/CustomIcons" preserve="nothing" serialized="true" />
+    <type fullname=".bl_LocalizationUI/UIType" preserve="nothing" serialized="true" />
+    <type fullname=".bl_MiniMap/MapType" preserve="nothing" serialized="true" />
+    <type fullname=".bl_MiniMap/RenderMode" preserve="nothing" serialized="true" />
+    <type fullname=".bl_MiniMap/RenderType" preserve="nothing" serialized="true" />
+    <type fullname=".bl_MiniMapItem/IconType" preserve="nothing" serialized="true" />
+    <type fullname=".bl_NetworkItem/ItemAuthority" preserve="nothing" serialized="true" />
+    <type fullname=".bl_ObjectPooling/PreRegister" preserve="nothing" serialized="true" />
+    <type fullname=".bl_PauseMenu/MenuWindow" preserve="nothing" serialized="true" />
+    <type fullname=".bl_ScoreboardPopUpMenuBase/MenuOptions" preserve="nothing" serialized="true" />
+    <type fullname=".bl_SpawnPoint/Shape" preserve="nothing" serialized="true" />
+    <type fullname=".bl_SpawnPointManager/SpawnMode" preserve="nothing" serialized="true" />
+    <type fullname=".bl_WeaponLoadoutUIBase/VisibilityMode" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Addon.Compass.bl_Compass/CompassType" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Audio.bl_AudioBank/AudioInfo" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Audio.bl_VirtualAudioController" preserve="nothing" serialized="true" />
@@ -258,39 +277,20 @@
     <type fullname="MFPS.Tween.bl_TweenCurveAlpha/OnFinish" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Tween.bl_TweenCurveScale/OnFinish" preserve="nothing" serialized="true" />
     <type fullname="UGUIMiniMap.MiniMapButtonsDisplay" preserve="nothing" serialized="true" />
-    <type fullname="bl_Crosshair/WeaponCrosshair" preserve="nothing" serialized="true" />
-    <type fullname="bl_Demolition/BombAssignMethod" preserve="nothing" serialized="true" />
-    <type fullname="bl_Demolition/TerroristWinRequire" preserve="nothing" serialized="true" />
-    <type fullname="bl_DropDispacher/DropInfo" preserve="nothing" serialized="true" />
-    <type fullname="bl_EventHandler/UEvent" preserve="nothing" serialized="true" />
-    <type fullname="bl_ExplosionDamage/ExplosionType" preserve="nothing" serialized="true" />
-    <type fullname="bl_KillFeedBase/CustomIcons" preserve="nothing" serialized="true" />
-    <type fullname="bl_LocalizationUI/UIType" preserve="nothing" serialized="true" />
-    <type fullname="bl_MiniMap/MapType" preserve="nothing" serialized="true" />
-    <type fullname="bl_MiniMap/RenderMode" preserve="nothing" serialized="true" />
-    <type fullname="bl_MiniMap/RenderType" preserve="nothing" serialized="true" />
-    <type fullname="bl_MiniMapItem/IconType" preserve="nothing" serialized="true" />
-    <type fullname="bl_NetworkItem/ItemAuthority" preserve="nothing" serialized="true" />
-    <type fullname="bl_ObjectPooling/PreRegister" preserve="nothing" serialized="true" />
-    <type fullname="bl_PauseMenu/MenuWindow" preserve="nothing" serialized="true" />
-    <type fullname="bl_ScoreboardPopUpMenuBase/MenuOptions" preserve="nothing" serialized="true" />
-    <type fullname="bl_SpawnPoint/Shape" preserve="nothing" serialized="true" />
-    <type fullname="bl_SpawnPointManager/SpawnMode" preserve="nothing" serialized="true" />
-    <type fullname="bl_WeaponLoadoutUIBase/VisibilityMode" preserve="nothing" serialized="true" />
-    <type fullname="bl_TerrainSurfaces/TerrainSurface" preserve="nothing" serialized="true" />
+    <type fullname=".bl_TerrainSurfaces/TerrainSurface" preserve="nothing" serialized="true" />
+    <type fullname=".ShopItemType" preserve="nothing" serialized="true" />
+    <type fullname=".bl_LobbyUI/LevelUI" preserve="nothing" serialized="true" />
+    <type fullname=".bl_LobbyUI/PopUpWindows" preserve="nothing" serialized="true" />
+    <type fullname=".bl_LobbyUI/WindowUI" preserve="nothing" serialized="true" />
+    <type fullname=".bl_PhotonNetworkStats/LogType" preserve="nothing" serialized="true" />
+    <type fullname=".bl_ShopData/ShopVirtualCoins" preserve="nothing" serialized="true" />
+    <type fullname=".bl_UserProfile/MenuWindow" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Addon.Clan.bl_ClanInfo" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Addon.Clan.bl_ClanManager/MenuWindow" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Addon.DailyReward.bl_RewardTimerHandler/TimerIntervalType" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Runtime.UI.bl_BarracksWindow/MenuWindow" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Runtime.UI.bl_MFPSCoinPriceUI/CoinUI" preserve="nothing" serialized="true" />
     <type fullname="MFPS.Shop.bl_PriceUI/PriceUI" preserve="nothing" serialized="true" />
-    <type fullname="ShopItemType" preserve="nothing" serialized="true" />
-    <type fullname="bl_LobbyUI/LevelUI" preserve="nothing" serialized="true" />
-    <type fullname="bl_LobbyUI/PopUpWindows" preserve="nothing" serialized="true" />
-    <type fullname="bl_LobbyUI/WindowUI" preserve="nothing" serialized="true" />
-    <type fullname="bl_PhotonNetworkStats/LogType" preserve="nothing" serialized="true" />
-    <type fullname="bl_ShopData/ShopVirtualCoins" preserve="nothing" serialized="true" />
-    <type fullname="bl_UserProfile/MenuWindow" preserve="nothing" serialized="true" />
   </assembly>
   <assembly fullname="PhotonUnityNetworking, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="Photon.Pun.PhotonView" preserve="all" />
@@ -494,8 +494,8 @@
     <type fullname="UnityEngine.CanvasRenderer" preserve="all" />
   </assembly>
   <assembly fullname="MFPS.Internal.Enums">
-    <type fullname="RoomUILayers" preserve="nothing" serialized="true" />
-    <type fullname="SeverRegionCode" preserve="nothing" serialized="true" />
+    <type fullname=".RoomUILayers" preserve="nothing" serialized="true" />
+    <type fullname=".SeverRegionCode" preserve="nothing" serialized="true" />
   </assembly>
   <assembly fullname="UnityEngine.IMGUIModule">
     <type fullname="UnityEngine.GUIStyle" preserve="nothing" serialized="true" />
