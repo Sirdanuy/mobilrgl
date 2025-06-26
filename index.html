@@ -1,153 +1,107 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Copeville</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-        background: url('TemplateData/Screenshot_2025-04-27_211351.png') center center / cover no-repeat;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Copeville Game</title>
+  <link rel="stylesheet" href="TemplateData/style.css" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url('41d19f1a-a006-4a3d-8acd-24979780f2dc.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: sans-serif;
+    }
 
-      #unity-container {
-        width: 100vw;
-        height: 100vh;
-        position: relative;
-      }
+    #unity-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
 
-      #unity-canvas {
-        width: 100%;
-        height: 100%;
-        background-color: transparent;
-      }
+    #unity-canvas {
+      display: block;
+      margin: auto;
+      background: transparent;
+    }
 
-      #custom-spinner {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 48px;
-        height: 48px;
-        border: 5px solid rgba(255, 255, 255, 0.2);
-        border-top-color: #00ffff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-      }
+    #loader-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1000;
+    }
 
-      #progress-text {
-        position: absolute;
-        top: calc(50% + 40px);
-        left: 50%;
-        transform: translateX(-50%);
-        font-family: Arial, sans-serif;
-        color: #ffffff;
-        font-size: 16px;
-        z-index: 9999;
-      }
+    .spinner {
+      border: 6px solid rgba(255, 255, 255, 0.3);
+      border-top: 6px solid #00cccc;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
 
-      @keyframes spin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="custom-spinner"></div>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #progress-text {
+      color: white;
+      margin-top: 10px;
+      font-size: 18px;
+      text-shadow: 0 0 4px black;
+    }
+
+    #unity-footer,
+    #unity-logo,
+    #unity-logo-title-footer {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="unity-container">
+    <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+    <div id="loader-wrapper">
+      <div class="spinner"></div>
       <div id="progress-text">0%</div>
-
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Copeville</div>
-      </div>
     </div>
+  </div>
 
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
-      var spinner = document.getElementById("custom-spinner");
-      var progressText = document.getElementById("progress-text");
+  <script>
+    const canvas = document.querySelector("#unity-canvas");
+    const progressText = document.getElementById("progress-text");
 
-      function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function () {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
-      }
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/New_Webgl.loader.js";
+    const config = {
+      dataUrl: "https://danny.b-cdn.net/Build/New_Webgl.data",
+      frameworkUrl: buildUrl + "/New_Webgl.framework.js",
+      codeUrl: buildUrl + "/New_Webgl.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "Copeville Development Team",
+      productName: "Copeville",
+      productVersion: "1.9.3",
+    };
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/New_Webgl.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: "https://danny.b-cdn.net/Build/New_Webgl.data",
-        frameworkUrl: buildUrl + "/New_Webgl.framework.js",
-        codeUrl: buildUrl + "/New_Webgl.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Copeville Development Team",
-        productName: "Copeville",
-        productVersion: "1.9.3",
-        showBanner: unityShowBanner,
-      };
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
-      } else {
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
-      }
-
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-          progressText.textContent = Math.floor(progress * 100) + "%";
-        }).then((unityInstance) => {
-          document.querySelector("#unity-loading-bar").style.display = "none";
-          spinner.style.display = "none";
-          progressText.style.display = "none";
-          document.querySelector("#unity-fullscreen-button").onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-
-      document.body.appendChild(script);
-    </script>
-  </body>
+    const script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressText.innerText = Math.round(progress * 100) + "%";
+      }).then((unityInstance) => {
+        document.getElementById("loader-wrapper").style.display = "none";
+      }).catch((message) => {
+        alert("Failed to load Unity instance: " + message);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
 </html>
