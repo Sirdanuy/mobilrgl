@@ -1,106 +1,117 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Copeville Game</title>
-  <link rel="stylesheet" href="TemplateData/style.css" />
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Copeville</title>
+  <link rel="shortcut icon" href="TemplateData/mainlogo.jpg">
   <style>
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: url('41d19f1a-a006-4a3d-8acd-24979780f2dc.png') no-repeat center center fixed;
-      background-size: cover;
-      font-family: sans-serif;
+      overflow: hidden;
+      background-color: #000;
     }
 
     #unity-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      background: url('bf6d8b31-584d-41aa-bd77-f0a105c0aa90.png') center center / cover no-repeat;
     }
 
     #unity-canvas {
-      display: block;
-      margin: auto;
-      background: transparent;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
     }
 
-    #loader-wrapper {
+    #custom-spinner {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 1000;
-    }
-
-    .spinner {
-      border: 6px solid rgba(255, 255, 255, 0.3);
-      border-top: 6px solid #00cccc;
+      width: 48px;
+      height: 48px;
+      border: 5px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #00ffff;
       border-radius: 50%;
-      width: 60px;
-      height: 60px;
       animation: spin 1s linear infinite;
-      margin: auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      transform: translate(-50%, -50%);
+      z-index: 10;
     }
 
     #progress-text {
-      color: white;
-      margin-top: 10px;
+      position: absolute;
+      top: calc(50% + 40px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: Arial, sans-serif;
+      color: #ffffff;
       font-size: 18px;
-      text-shadow: 0 0 4px black;
+      z-index: 11;
     }
 
-    #unity-footer,
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    #unity-loading-bar,
     #unity-logo,
-    #unity-logo-title-footer {
+    #unity-footer {
       display: none !important;
     }
   </style>
 </head>
 <body>
   <div id="unity-container">
-    <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
-    <div id="loader-wrapper">
-      <div class="spinner"></div>
-      <div id="progress-text">0%</div>
-    </div>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="custom-spinner"></div>
+    <div id="progress-text">0%</div>
   </div>
 
   <script>
-    const canvas = document.querySelector("#unity-canvas");
-    const progressText = document.getElementById("progress-text");
+    var canvas = document.querySelector("#unity-canvas");
+    var progressText = document.querySelector("#progress-text");
+    var spinner = document.querySelector("#custom-spinner");
 
-    const buildUrl = "Build";
-    const loaderUrl = buildUrl + "/New_Webgl.loader.js";
-    const config = {
-      dataUrl: "https://danny.b-cdn.net/Build/New_Webgl.data",
-      frameworkUrl: buildUrl + "/New_Webgl.framework.js",
-      codeUrl: buildUrl + "/New_Webgl.wasm",
+    var buildUrl = "Build";
+    var config = {
+      arguments: [],
+      dataUrl: "https://danny.b-cdn.net/Build/none.data",
+      frameworkUrl: buildUrl + "/none.framework.js",
+      codeUrl: buildUrl + "/none.wasm",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "Copeville Development Team",
       productName: "Copeville",
       productVersion: "1.9.3",
+      showBanner: function() {},
     };
 
-    const script = document.createElement("script");
-    script.src = loaderUrl;
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+      document.querySelector("#unity-container").className = "unity-mobile";
+      canvas.className = "unity-mobile";
+    }
+
+    var script = document.createElement("script");
+    script.src = buildUrl + "/none.loader.js";
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
-        progressText.innerText = Math.round(progress * 100) + "%";
+        progressText.textContent = Math.round(progress * 100) + "%";
       }).then((unityInstance) => {
-        document.getElementById("loader-wrapper").style.display = "none";
+        spinner.style.display = "none";
+        progressText.style.display = "none";
       }).catch((message) => {
-        alert("Failed to load Unity instance: " + message);
+        alert("Failed to load Unity: " + message);
       });
     };
+
     document.body.appendChild(script);
   </script>
 </body>
