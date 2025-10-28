@@ -5,25 +5,37 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Copeville</title>
     <link rel="shortcut icon" href="TemplateData/mainlogo.jpg">
+    <!-- Mobile-first viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
     <style>
+      :root {
+        /* 9:16 aspect hint for layout math if needed later */
+        --mobile-w: 9;
+        --mobile-h: 16;
+      }
+
       html, body {
         margin: 0;
         padding: 0;
         height: 100%;
         overflow: hidden;
         font-family: Arial, sans-serif;
-        background-color: black;
+        background: #000;
+        touch-action: none;              /* reduce pinch-zoom and scroll */
+        -webkit-tap-highlight-color: transparent;
       }
 
+      /* Main container fills the viewport */
       #unity-container {
+        position: fixed;
+        inset: 0;
         width: 100vw;
         height: 100vh;
-        background: url('Build/none.png') center center / cover no-repeat;
-        position: fixed;
-        top: 0;
-        left: 0;
+        background: url('Build/none.png') center center / cover no-repeat, #000;
       }
 
+      /* Canvas fills container; WebGL size will match this */
       #unity-canvas {
         width: 100%;
         height: 100%;
@@ -31,6 +43,7 @@
         background-color: transparent;
       }
 
+      /* Spinner + progress */
       #custom-spinner {
         position: absolute;
         top: 50%;
@@ -44,17 +57,16 @@
         transform: translate(-50%, -50%);
         z-index: 10;
       }
-
       #progress-text {
         position: absolute;
         top: calc(50% + 50px);
         left: 50%;
         transform: translateX(-50%);
-        font-size: 20px;
-        color: white;
+        font-size: 18px;
+        color: #fff;
         z-index: 11;
+        letter-spacing: 0.5px;
       }
-
       @keyframes spin {
         0% { transform: translate(-50%, -50%) rotate(0deg); }
         100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -66,6 +78,8 @@
         position: absolute;
         bottom: 10px;
         left: 10px;
+        font-size: 12px;
+        max-width: 80vw;
       }
 
       #unity-footer {
@@ -73,61 +87,163 @@
         bottom: 10px;
         right: 10px;
         color: white;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        z-index: 12;
       }
+      #unity-fullscreen-button { cursor: pointer; }
+
+      /* Desktop-block overlay */
+      #desktop-block, #landscape-block {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        color: #fff;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px;
+        z-index: 1000;
+      }
+      #desktop-block .box, #landscape-block .box {
+        max-width: 560px;
+        width: 90%;
+        border: 1px solid rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(6px);
+        border-radius: 16px;
+        padding: 20px;
+      }
+      #desktop-block h1, #landscape-block h1 {
+        margin: 0 0 8px 0;
+        font-size: 20px;
+      }
+      #desktop-block p, #landscape-block p {
+        margin: 0;
+        opacity: 0.9;
+        line-height: 1.5;
+        font-size: 14px;
+      }
+
+      /* Show rotate overlay when on mobile but landscape */
+      @media (orientation: landscape) {
+        body.mobile #landscape-block { display: flex; }
+      }
+
+      /* Always block desktop completely */
+      body.desktop #desktop-block { display: flex; }
+      body.desktop #unity-container { display: none; }  /* hide app on desktop */
     </style>
   </head>
   <body>
+    <!-- Desktop overlay -->
+    <div id="desktop-block">
+      <div class="box">
+        <h1>Mobile Only</h1>
+        <p>Please open Copeville on a mobile phone for the best experience.</p>
+      </div>
+    </div>
+
+    <!-- Landscape overlay for phones -->
+    <div id="landscape-block">
+      <div class="box">
+        <h1>Rotate Your Device</h1>
+        <p>This game is optimized for portrait. Please rotate your phone.</p>
+      </div>
+    </div>
+
     <div id="unity-container">
       <canvas id="unity-canvas" tabindex="-1"></canvas>
       <div id="custom-spinner"></div>
       <div id="progress-text">0%</div>
       <div id="unity-warning"></div>
       <div id="unity-footer">
-        <div id="unity-fullscreen-button" style="cursor:pointer;">🔳 Fullscreen</div>
+        <div id="unity-fullscreen-button">🔳 Fullscreen</div>
         <div id="unity-build-title">Copeville</div>
       </div>
     </div>
 
     <script>
-      var canvas = document.querySelector("#unity-canvas");
-      var spinner = document.querySelector("#custom-spinner");
-      var progressText = document.querySelector("#progress-text");
+      // Simple mobile detection
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+      // Mark body for CSS logic
+      document.body.classList.add(isMobile ? 'mobile' : 'desktop');
+
+      if (!isMobile) {
+        // Do not load Unity on desktop at all
+        // The overlay already shows; exit early.
+        throw new Error('Mobile-only mode. Unity not initialized on desktop.');
+      }
+
+      // Cap DPR to 1 on mobile to reduce memory and improve stability
+      const cappedDPR = 1;
+
+      // Rotate overlay handling (already handled by CSS, but also ensure canvas sizing stays correct)
+      const canvas = document.querySelector("#unity-canvas");
+      const spinner = document.querySelector("#custom-spinner");
+      const progressText = document.querySelector("#progress-text");
 
       function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
+        const warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
         }
-        var div = document.createElement('div');
+        const div = document.createElement('div');
         div.innerHTML = msg;
         warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        if (type === 'error') div.style = 'background: red; padding: 10px;';
         else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          if (type === 'warning') div.style = 'background: yellow; padding: 10px;';
           setTimeout(() => {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
+            if (div.parentNode === warningBanner) {
+              warningBanner.removeChild(div);
+              updateBannerVisibility();
+            }
           }, 5000);
         }
         updateBannerVisibility();
       }
 
-      var buildUrl = "Build";
-      var loaderUrl = "https://danny.b-cdn.net/Build/mobile.loader.js";
-      var config = {
+      // Always keep canvas matched to viewport
+      function sizeCanvasToViewport() {
+        // These set the backing store size Unity will see when matchWebGLToCanvasSize = true
+        canvas.width  = Math.floor(window.innerWidth  * 1); // leave at CSS pixels
+        canvas.height = Math.floor(window.innerHeight * 1);
+      }
+      sizeCanvasToViewport();
+      window.addEventListener('resize', sizeCanvasToViewport);
+      window.addEventListener('orientationchange', sizeCanvasToViewport);
+
+      // Unity CDN config (kept from your snippet)
+      const loaderUrl = "https://danny.b-cdn.net/Build/mobile.loader.js";
+      const config = {
         arguments: [],
         dataUrl: "https://danny.b-cdn.net/Build/mobile.data",
         frameworkUrl: "https://danny.b-cdn.net/Build/mobile.framework.js",
         codeUrl: "https://danny.b-cdn.net/Build/mobile.wasm",
-        // dataUrl: buildUrl + "/webgl4.data",
         streamingAssetsUrl: "https://danny.b-cdn.net/StreamingAssets",
         companyName: "Copeville Development Team",
         productName: "Copeville",
         productVersion: "1.9.3",
         showBanner: unityShowBanner,
+
+        /* Mobile-only performance knobs */
+        devicePixelRatio: cappedDPR,          // cap DPR to 1 to lower memory/VRAM
+        matchWebGLToCanvasSize: true,         // keep GL buffer = canvas size
+        webglContextAttributes: {
+          antialias: false,
+          preserveDrawingBuffer: false,
+          powerPreference: "high-performance",
+          alpha: false,
+          desynchronized: true
+        }
       };
 
-      var script = document.createElement("script");
+      // Load Unity loader and bootstrap
+      const script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
@@ -140,10 +256,10 @@
             unityInstance.SetFullscreen(1);
           };
         }).catch((message) => {
+          // If something fails, still show a clean alert
           alert(message);
         });
       };
-
       document.body.appendChild(script);
     </script>
   </body>
