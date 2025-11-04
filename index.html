@@ -118,23 +118,7 @@
     throw new Error("Mobile only");
   }
 
-  function handleOrientation() {
-    if (window.matchMedia("(orientation: portrait)").matches) {
-      rotate.style.display = "flex";
-      unityContainer.style.display = "none";
-      tapstart.style.display = "none";
-    } else {
-      rotate.style.display = "none";
-      unityContainer.style.display = "block";
-      tapstart.style.display = "flex";
-    }
-  }
-  window.addEventListener("orientationchange", handleOrientation);
-  window.addEventListener("resize", handleOrientation);
-  handleOrientation();
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  
 
   const loaderUrl = "https://danny.b-cdn.net/Build/mobile.loader.js";
   const config = {
